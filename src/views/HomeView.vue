@@ -4,27 +4,48 @@ import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import { usePokemonStore } from '@/stores/pokemonStore'
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { DATA_LIMIT as LIMIT, DATA_OFFSET as OFFSET } from '@/constants'
 import ProgressSpinner from 'primevue/progressspinner'
+import useFilters from '@/composables/useFilters'
+import usePagination from '@/composables/usePagination'
+import Pokemon from '@/models/Pokemon'
 
 const store = usePokemonStore()
 
-const filter = ref<string>('')
+const { filter, setFilter, filteredData } = useFilters(store.pokemons, (pokemon, filter) => {
+  return pokemon.name.toLowerCase().includes(filter.toLowerCase())
+})
+
+const { rowsPerPage, currentPage, paginatedData, setPage, totalItems } = usePagination<Pokemon>({
+  data: filteredData,
+  rowsPerPage: ref(LIMIT),
+  currentPage: ref(OFFSET)
+})
 
 onMounted(() => {
-  store.loadPokemons(LIMIT, OFFSET, filter.value)
+  store.loadAllPokemons('')
+  setPage(OFFSET)
 })
 
-watch(filter, (newFilter) => {
-  store.loadPokemons(LIMIT, OFFSET, newFilter)
-})
+watch(
+  () => filter.value,
+  (newFilter) => {
+    store.loadAllPokemons(newFilter)
+  }
+)
 
-const filteredPokemons = computed(() => {
-  return store.pokemons.filter((pokemon) =>
-    pokemon.name.toLowerCase().includes(filter.value.toLowerCase())
-  )
-})
+watch(
+  () => paginatedData.value,
+  () => {
+    store.loadAllPokemons(filter.value)
+  }
+)
+
+const onFilterChange = () => {
+  setFilter(filter.value)
+  setPage(OFFSET)
+}
 </script>
 
 <template>
@@ -35,18 +56,25 @@ const filteredPokemons = computed(() => {
     </div>
     <div v-else>
       <div class="flex justify-center mb-4">
-        <IconField>
+        <IconField class="w-full md:w-6">
           <InputIcon class="pi pi-search" />
           <InputText
             v-model="filter"
             type="text"
-            class="w-full md:w-1/2"
-            placeholder="Search Pokemon"
+            class="w-full"
+            placeholder="Search for a Pokemon"
+            @input="onFilterChange"
           />
         </IconField>
       </div>
-      <div class="flex justify-center">
-        <PokemonList :pokemons="filteredPokemons" />
+      <div>
+        <PokemonList
+          :pokemons="store.pokemons"
+          :total-items="totalItems"
+          :limit="rowsPerPage"
+          :offset="currentPage"
+          @page-change="setPage"
+        />
       </div>
     </div>
   </section>

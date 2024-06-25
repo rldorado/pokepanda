@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import Pokemon from '@/models/Pokemon'
-import { fetchPokemons } from '@/services'
+import { fetchAllPokemons } from '@/services'
 interface PokemonState {
   pokemons: Pokemon[]
   loading: boolean
@@ -15,11 +15,10 @@ export const usePokemonStore = defineStore('pokemonStore', {
       error: null
     }) as PokemonState,
   actions: {
-    async loadPokemons(limit: number, offset: number, filter: string) {
+    async loadAllPokemons(filter: string) {
       this.loading = true
       try {
-        const { data } = await fetchPokemons(limit, offset, filter)
-        this.pokemons = data?.pokemon_v2_pokemon ?? []
+        this.pokemons = await fetchAllPokemons(filter)
         this.error = null
       } catch (error) {
         this.error = 'Failed to load Pokemons'

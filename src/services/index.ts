@@ -8,16 +8,15 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-export const fetchPokemons = async (limit: number, offset: number, filter: string) => {
+export const fetchAllPokemons = async (filter: string = '') => {
   try {
-    return await client.query({
+    const { data } = await client.query({
       query: GET_POKEMONS,
       variables: {
-        limit,
-        offset,
         name: `%${filter}%`
       }
     })
+    return data?.pokemon_v2_pokemon ?? []
   } catch (error) {
     throw new Error('Failed to fetch pokemons')
   }
