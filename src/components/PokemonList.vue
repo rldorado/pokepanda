@@ -3,9 +3,13 @@ import DataView from 'primevue/dataview'
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
 import Dropdown from 'primevue/dropdown'
 import Tag from 'primevue/tag'
+import Badge from 'primevue/badge'
 import { IMAGE_BASE_URL } from '@/constants'
 import Pokemon from '@/models/Pokemon'
 import { ref } from 'vue'
+import useSort from '@/composables/useSort'
+
+const { sortKey, sortOrder, sortField, sortOptions, onSortChange } = useSort()
 
 const props = defineProps<{
   pokemons: Pokemon[]
@@ -24,23 +28,6 @@ const pokemonImage = (id: number) => {
 
 const onPageChange = (event: { page: number }) => {
   emit('page-change', event.page * props.limit)
-}
-
-const sortKey = ref<string>('')
-const sortField = ref<string>('')
-const sortOrder = ref<number>(0) // 1 for ascending, -1 for descending, 0 for none
-const sortOptions: string[] = ['name', 'height', 'weight', 'base_experience']
-
-const onSortChange = (event: { value: string }) => {
-  const sortValue = event.value
-
-  if (sortValue.indexOf('!') === 0) {
-    sortOrder.value = -1
-    sortField.value = sortValue.substring(1, sortValue.length)
-  } else {
-    sortOrder.value = 1
-    sortField.value = sortValue
-  }
 }
 </script>
 
@@ -84,6 +71,15 @@ const onSortChange = (event: { value: string }) => {
             <p class="m-0">Height: {{ item.height }}</p>
             <p class="m-0">Weight: {{ item.weight }}</p>
             <p class="m-0">Base Experience: {{ item.base_experience }}</p>
+            <p>
+              <strong>Types:</strong>
+              <Badge
+                v-for="type in item.pokemon_v2_pokemontypes"
+                :key="type.pokemon_v2_type.name"
+                :value="type.pokemon_v2_type.name"
+                class="mb-2 ml-2"
+              />
+            </p>
           </div>
         </div>
       </div>
@@ -105,6 +101,15 @@ const onSortChange = (event: { value: string }) => {
               <p class="m-0">Height: {{ item.height }}</p>
               <p class="m-0">Weight: {{ item.weight }}</p>
               <p class="m-0">Base Experience: {{ item.base_experience }}</p>
+              <p>
+                <strong>Types:</strong>
+                <Badge
+                  v-for="type in item.pokemon_v2_pokemontypes"
+                  :key="type.pokemon_v2_type.name"
+                  :value="type.pokemon_v2_type.name"
+                  class="mb-2 ml-2"
+                />
+              </p>
             </div>
           </div>
         </div>
