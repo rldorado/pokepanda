@@ -6,21 +6,28 @@ export const useSort = () => {
   const sortKey = ref<string>('')
   const sortField = ref<string>('')
   const sortOrder = ref<SortOrder>(0)
-  const sortOptions: string[] = ['name', 'height', 'weight', 'base_experience']
+  const sortOptions: { label: string; value: string }[] = [
+    { label: 'Pokedex', value: 'id' },
+    { label: 'Pokedex reversed', value: '!id' },
+    { label: 'Name descending', value: 'name' },
+    { label: 'Name ascending', value: '!name' }
+  ]
 
-  const onSortChange = (event: { value: string }) => {
+  const setSort = (event: { value: string }) => {
     const sortValue = event.value
 
     if (sortValue.indexOf('!') === 0) {
       sortOrder.value = -1
       sortField.value = sortValue.substring(1, sortValue.length)
+      sortKey.value = sortValue
     } else {
       sortOrder.value = 1
       sortField.value = sortValue
+      sortKey.value = sortValue
     }
   }
 
-  return { onSortChange, sortKey, sortField, sortOrder, sortOptions }
+  return { setSort, sortKey, sortField, sortOrder, sortOptions }
 }
 
 export default useSort

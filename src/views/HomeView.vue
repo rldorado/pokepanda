@@ -9,19 +9,25 @@ import { DATA_LIMIT as LIMIT, DATA_OFFSET as OFFSET } from '@/constants'
 import ProgressSpinner from 'primevue/progressspinner'
 import useFilters from '@/composables/useFilters'
 import usePagination from '@/composables/usePagination'
+import useSort from '@/composables/useSort'
 import Pokemon from '@/models/Pokemon'
 
 const store = usePokemonStore()
 
+// Search filter
 const { filter, setFilter, filteredData } = useFilters(store.pokemons, (pokemon, filter) => {
   return pokemon.name.toLowerCase().includes(filter.toLowerCase())
 })
 
-const { rowsPerPage, currentPage, paginatedData, setPage, totalItems } = usePagination<Pokemon>({
+// Pagination
+const { rowsPerPage, currentPage, setPage, totalItems } = usePagination<Pokemon>({
   data: filteredData,
   rowsPerPage: ref(LIMIT),
   currentPage: ref(OFFSET)
 })
+
+// Sorting
+const { sortKey, sortOrder, sortField, sortOptions, setSort } = useSort()
 
 onMounted(() => {
   store.loadAllPokemons('')
@@ -32,13 +38,6 @@ watch(
   () => filter.value,
   (newFilter) => {
     store.loadAllPokemons(newFilter)
-  }
-)
-
-watch(
-  () => paginatedData.value,
-  () => {
-    store.loadAllPokemons(filter.value)
   }
 )
 
@@ -56,7 +55,7 @@ const onFilterChange = () => {
     </div>
     <div v-else>
       <div class="flex justify-center mb-4">
-        <IconField class="w-full md:w-6">
+        <IconField class="w-full md:w-3">
           <InputIcon class="pi pi-search" />
           <InputText
             v-model="filter"
@@ -73,6 +72,8 @@ const onFilterChange = () => {
           :total-items="totalItems"
           :limit="rowsPerPage"
           :offset="currentPage"
+          :sort="{ key: sortKey, field: sortField, order: sortOrder, options: sortOptions }"
+          @sort-change="setSort"
           @page-change="setPage"
         />
       </div>

@@ -9,9 +9,8 @@ import router from './router'
 
 // INFO: UI library
 import PrimeVue from 'primevue/config'
-
-import 'primevue/resources/themes/soho-light/theme.css'
-import 'primevue/resources/primevue.min.css'
+import PrimeTheme from '@primevue/themes/lara'
+// INFO: CSS
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
@@ -19,6 +18,8 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(PrimeVue)
+app.use(PrimeVue, {
+  theme: { preset: PrimeTheme, options: { darkModeSelector: '.dark-mode' } }
+})
 
 app.mount('#app')

@@ -1,29 +1,29 @@
 <script setup lang="ts">
 import DataView from 'primevue/dataview'
-import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
-import Dropdown from 'primevue/dropdown'
+import Select from 'primevue/select'
 import Tag from 'primevue/tag'
 import Badge from 'primevue/badge'
-import { IMAGE_BASE_URL } from '@/constants'
 import Pokemon from '@/models/Pokemon'
-import { ref } from 'vue'
-import useSort from '@/composables/useSort'
-
-const { sortKey, sortOrder, sortField, sortOptions, onSortChange } = useSort()
+import { pokemonImage } from '@/helpers'
+import { RouterLink } from 'vue-router'
 
 const props = defineProps<{
   pokemons: Pokemon[]
   totalItems: number
   limit: number
   offset: number
+  sort: {
+    key: string
+    field: string
+    order: number
+    options: { label: string; value: string }[]
+  }
 }>()
 
-const emit = defineEmits(['page-change'])
+const emit = defineEmits(['page-change', 'sort-change'])
 
-const layout = ref<'list' | 'grid'>('list')
-
-const pokemonImage = (id: number) => {
-  return `${IMAGE_BASE_URL}/${id}.png`
+const onSortChange = (event: { value: string }) => {
+  emit('sort-change', event.value)
 }
 
 const onPageChange = (event: { page: number }) => {
@@ -39,49 +39,22 @@ const onPageChange = (event: { page: number }) => {
     :first="offset"
     :rows="limit"
     :total-records="totalItems"
-    :layout="layout"
-    :sort-order="sortOrder"
-    :sort-field="sortField"
+    layout="grid"
+    :sort-order="sort.order"
+    :sort-field="sort.field"
     @page="onPageChange"
   >
     <template #header>
       <div class="flex justify-content-between align-items-center">
-        <h2 class="m-0">Pokemon List</h2>
-        <Dropdown
-          v-model="sortKey"
-          :value="sortKey"
-          :options="sortOptions"
+        <h2 class="m-0">Pokedex</h2>
+        <Select
+          :value="sort.key"
+          :options="sort.options"
+          option-label="label"
           placeholder="Sort By"
+          class="md:w-2"
           @change="onSortChange"
         />
-        <DataViewLayoutOptions v-model="layout"></DataViewLayoutOptions>
-      </div>
-    </template>
-    <template #list="slotProps">
-      <div v-for="(item, index) in slotProps.items" :key="index">
-        <div class="flex flex-column sm:flex-row sm:items-center p-6 gap-4">
-          <div class="w-full md:w-2 relative">
-            <img :src="pokemonImage(item.id)" :alt="item.name" class="w-full" />
-            <Tag :value="item.id" class="absolute top-0 left-0" />
-          </div>
-          <div class="flex-1">
-            <div class="flex justify-content-start align-items-center">
-              <h3 class="m-0">{{ item.name.charAt(0).toUpperCase() + item.name.slice(1) }}</h3>
-            </div>
-            <p class="m-0">Height: {{ item.height }}</p>
-            <p class="m-0">Weight: {{ item.weight }}</p>
-            <p class="m-0">Base Experience: {{ item.base_experience }}</p>
-            <p>
-              <strong>Types:</strong>
-              <Badge
-                v-for="type in item.pokemon_v2_pokemontypes"
-                :key="type.pokemon_v2_type.name"
-                :value="type.pokemon_v2_type.name"
-                class="mb-2 ml-2"
-              />
-            </p>
-          </div>
-        </div>
       </div>
     </template>
     <template #grid="slotProps">
@@ -96,17 +69,15 @@ const onPageChange = (event: { page: number }) => {
               <img :src="pokemonImage(item.id)" :alt="item.name" class="w-full" />
               <Tag :value="item.id" class="absolute top-0 left-0" />
             </div>
-            <div class="flex flex-column align-items-start mt-3">
-              <h3 class="m-0">{{ item.name.charAt(0).toUpperCase() + item.name.slice(1) }}</h3>
-              <p class="m-0">Height: {{ item.height }}</p>
-              <p class="m-0">Weight: {{ item.weight }}</p>
-              <p class="m-0">Base Experience: {{ item.base_experience }}</p>
+            <div class="flex flex-column align-items-center mt-3">
+              <RouterLink :to="`/pokemon/${item.id}`">
+                <h3 class="m-0">{{ item.name.charAt(0).toUpperCase() + item.name.slice(1) }}</h3>
+              </RouterLink>
               <p>
-                <strong>Types:</strong>
                 <Badge
-                  v-for="type in item.pokemon_v2_pokemontypes"
-                  :key="type.pokemon_v2_type.name"
-                  :value="type.pokemon_v2_type.name"
+                  v-for="type in item.types"
+                  :key="type.name"
+                  :value="type.name"
                   class="mb-2 ml-2"
                 />
               </p>
