@@ -1,67 +1,170 @@
 # PokePanda
 
-## Descripción
+[Demo Video](public/Demo.webm)
 
-Aplicación web para visualizar y buscar Pokémon utilizando Vue 3 y la PokeAPI.
+![Draft Wireframe](public/mockup.png)
 
-## Instalación
+## Description
 
-1. Clonar el repositorio:
+A web application to view and search for Pokémon using Vue 3 and PokeAPI.
+
+## Technologies Used
+
+- **Vue 3**: The main framework used for building the application.
+- **TypeScript**: Provides static typing to enhance code quality and maintainability.
+- **Vite**: A fast and lightweight development server and build tool.
+- **Pinia**: For state management, offering a simpler API and better TypeScript support compared to Vuex.
+- **PrimeVue**: A UI component library used for building responsive and visually appealing components.
+- **PrimeFlex**: A CSS utility library used in conjunction with PrimeVue for layout and styling.
+- **PrimeIcons**: Icon library for adding vector icons to the application.
+- **ESLint**: For linting to ensure code quality.
+- **Prettier**: For code formatting to maintain a consistent style.
+- **Vitest**: A fast unit testing framework.
+- **@testing-library/vue**: For testing Vue components in a way that resembles user interactions.
+- **Apollo Client**: For making GraphQL queries to the PokeAPI.
+
+## Installation
+
+1. Clone the repository:
 
    ```sh
-   git clone <url-del-repositorio>
+   git clone <repository-url>
    ```
 
-2. Navegar al directorio del proyecto:
+2. Navigate to the project directory:
 
    ```sh
-   cd poke-panda
+   cd pokepanda
    ```
 
-3. Instalar dependencias:
+### Using npm
+
+3. Install dependencies:
    ```sh
    npm install
    ```
 
-## Ejecución
+### Using pnpm
 
-1. Iniciar el servidor de desarrollo:
+3. Install dependencies:
+   ```sh
+   pnpm install
+   ```
+
+### Using yarn
+
+3. Install dependencies:
+   ```sh
+   yarn install
+   ```
+
+## Running the Application
+
+### Using npm
+
+1. Start the development server:
 
    ```sh
    npm run dev
    ```
 
-2. Abrir el navegador y navegar a `http://localhost:3000`
+2. Open the browser and navigate to `http://localhost:5173`
 
-## Construcción para producción
+### Using pnpm
 
-1. Construir la aplicación:
+1. Start the development server:
+
+   ```sh
+   pnpm run dev
+   ```
+
+2. Open the browser and navigate to `http://localhost:5173`
+
+### Using yarn
+
+1. Start the development server:
+
+   ```sh
+   yarn dev
+   ```
+
+2. Open the browser and navigate to `http://localhost:5173`
+
+## Building for Production
+
+### Using npm
+
+1. Build the application:
 
    ```sh
    npm run build
    ```
 
-2. Servir la aplicación construida:
+2. Serve the built application:
    ```sh
-   npm run serve
+   npm run dev
    ```
 
-## Pruebas
+### Using pnpm
 
-1. Ejecutar pruebas unitarias:
+1. Build the application:
+
    ```sh
-   npm run test
+   pnpm run build
    ```
 
-## Explicación de las decisiones
+2. Serve the built application:
+   ```sh
+   pnpm run dev
+   ```
 
-- Utilizamos Vue 3 junto con TypeScript para aprovechar las capacidades de tipado estático.
-- PrimeVue y PrimeFlex se utilizaron para una construcción rápida y eficiente de la UI, asegurando un diseño responsive.
-- La PokeAPI fue elegida debido a su robustez y facilidad de uso.
+### Using yarn
 
-## Pendiente
+1. Build the application:
 
-- Agregar caching para mejorar el rendimiento.
-- Incluir pruebas unitarias y B2B adicionales.
-- Crear un video de demostración.
-- Generar wireframes de la aplicación.
+   ```sh
+   yarn build
+   ```
+
+2. Serve the built application:
+   ```sh
+   yarn dev
+   ```
+
+## Testing
+
+### Unit Tests
+
+### Using npm
+
+1. Run unit tests:
+   ```sh
+   npm run test:unit
+   ```
+
+### Using pnpm
+
+1. Run unit tests:
+   ```sh
+   pnpm run test:unit
+   ```
+
+### Using yarn
+
+1. Run unit tests:
+   ```sh
+   yarn test:unit
+   ```
+
+## Decision Explanation
+
+- **Vue 3 with TypeScript**: Leveraged for its static typing capabilities, which enhance code quality and maintainability.
+- **PrimeVue and PrimeFlex**: Utilized for rapid and efficient UI construction, ensuring a responsive design.
+- **PokeAPI**: Chosen for its robustness and ease of use, providing a comprehensive data set for Pokémon.
+
+## Pending Items
+
+- **Caching API Calls**: Improve performance by caching API responses.
+- **Wireframes**: Create and include wireframes for the solution.
+- **Demo Video**: Record and include a demonstration video of the working solution.
+- **Unit Tests**: Write additional unit and integration tests to ensure application reliability.
