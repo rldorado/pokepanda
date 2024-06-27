@@ -1,17 +1,12 @@
 import { ref } from 'vue'
-
-type SortOrder = 1 | -1 | 0 // 1 for ascending, -1 for descending, 0 for none
+import { type SortOrder } from '@/helpers'
+import { SORT_OPTIONS } from '@/constants'
 
 export const useSort = () => {
   const sortKey = ref<string>('')
   const sortField = ref<string>('')
   const sortOrder = ref<SortOrder>(0)
-  const sortOptions: { label: string; value: string }[] = [
-    { label: 'Pokedex', value: 'id' },
-    { label: 'Pokedex reversed', value: '!id' },
-    { label: 'Name descending', value: 'name' },
-    { label: 'Name ascending', value: '!name' }
-  ]
+  const sortOptions: { label: string; value: string }[] = SORT_OPTIONS
 
   const setSort = (event: { value: string }) => {
     const sortValue = event.value

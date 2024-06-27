@@ -1,10 +1,11 @@
 <script setup lang="ts">
+// eslint-disable-next-line no-redeclare
 import DataView from 'primevue/dataview'
 import Select from 'primevue/select'
 import Tag from 'primevue/tag'
 import Badge from 'primevue/badge'
 import Pokemon from '@/models/Pokemon'
-import { pokemonImage } from '@/helpers'
+import { SortOrder, pokemonImage } from '@/helpers'
 import { RouterLink } from 'vue-router'
 
 const props = defineProps<{
@@ -15,7 +16,7 @@ const props = defineProps<{
   sort: {
     key: string
     field: string
-    order: number
+    order: SortOrder
     options: { label: string; value: string }[]
   }
 }>()
@@ -40,14 +41,15 @@ const onPageChange = (event: { page: number }) => {
     :rows="limit"
     :total-records="totalItems"
     layout="grid"
-    :sort-order="sort.order"
-    :sort-field="sort.field"
+    :sort-order="sort?.order"
+    :sort-field="sort?.field"
     @page="onPageChange"
   >
     <template #header>
       <div class="flex justify-content-between align-items-center">
         <h2 class="m-0">Pokedex</h2>
         <Select
+          v-if="sort"
           :value="sort.key"
           :options="sort.options"
           option-label="label"

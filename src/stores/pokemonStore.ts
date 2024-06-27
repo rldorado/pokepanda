@@ -42,3 +42,5 @@ export const usePokemonStore = defineStore('pokemonStore', {
     }
   }
 })
+
+export default usePokemonStore
