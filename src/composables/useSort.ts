@@ -1,28 +1,41 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { type SortOrder } from '@/helpers'
-import { SORT_OPTIONS } from '@/constants'
 
-export const useSort = () => {
+export const useSort = <T>() => {
   const sortKey = ref<string>('')
   const sortField = ref<string>('')
   const sortOrder = ref<SortOrder>(0)
-  const sortOptions: { label: string; value: string }[] = SORT_OPTIONS
 
-  const setSort = (event: { value: string }) => {
-    const sortValue = event.value
-
-    if (sortValue.indexOf('!') === 0) {
+  /**
+   * Sets the sorting criteria based on the selected option value.
+   *
+   * @param {Object} selectedOption - An object containing label and value properties.
+   */
+  const setSort = (selectedOption: { label: string; value: string }) => {
+    if (selectedOption.value.indexOf('!') === 0) {
       sortOrder.value = -1
-      sortField.value = sortValue.substring(1, sortValue.length)
-      sortKey.value = sortValue
+      sortField.value = selectedOption.value.substring(1, selectedOption.value.length)
+      sortKey.value = selectedOption.label
     } else {
       sortOrder.value = 1
-      sortField.value = sortValue
-      sortKey.value = sortValue
+      sortField.value = selectedOption.value
+      sortKey.value = selectedOption.label
     }
   }
 
-  return { setSort, sortKey, sortField, sortOrder, sortOptions }
+  const sortFunction = computed(() => {
+    return (a: T, b: T) => {
+      if (!sortField.value) return 0
+      const aValue = (a as never)[sortField.value]
+      const bValue = (b as never)[sortField.value]
+
+      if (aValue < bValue) return -1 * sortOrder.value
+      if (aValue > bValue) return 1 * sortOrder.value
+      return 0
+    }
+  })
+
+  return { setSort, sortKey, sortField, sortOrder, sortFunction }
 }
 
 export default useSort

@@ -1,28 +1,32 @@
-import { DATA_LIMIT as LIMIT, DATA_OFFSET as OFFSET } from '@/constants'
-import { Ref, computed, ref } from 'vue'
+import { DATA_LIMIT as ITEMS_PER_PAGE, DATA_OFFSET as OFFSET } from '@/constants'
+import { Ref, computed, ref, ComputedRef } from 'vue'
 
-interface PaginationConfig<T> {
-  rowsPerPage?: Ref<number>
-  data: Ref<T[]>
+export interface PaginationConfig<T> {
+  rowsPerPage: Ref<number>
+  data: ComputedRef<T[]>
   currentPage: Ref<number>
 }
 
 export const usePagination = <T>(config: PaginationConfig<T>) => {
-  const rowsPerPage = config.rowsPerPage || ref(LIMIT)
+  const rowsPerPage = config.rowsPerPage || ref(ITEMS_PER_PAGE)
   const currentPage = config.currentPage || ref(OFFSET)
 
   const paginatedData = computed(() => {
-    const data = config.data.value
-    return data.slice(
-      currentPage.value * rowsPerPage.value,
-      currentPage.value * rowsPerPage.value + rowsPerPage.value
-    )
+    const startIndex = currentPage.value * rowsPerPage.value
+    return config.data.value.slice(startIndex, startIndex + rowsPerPage.value)
   })
 
-  const totalItems = computed(() => Math.ceil((config.data.value.length || 0) / rowsPerPage.value))
+  const totalItems = computed(() => config.data.value.length)
 
-  const setPage = (offset: number) => {
-    currentPage.value = offset
+  /**
+   * Sets the current page number within the valid range of pages based on the given page number.
+   *
+   * @param {number} page - The page number to set as the current page.
+   * @return {void} This function does not return a value.
+   */
+  const setPage = (page: number) => {
+    const maxPage = Math.ceil(totalItems.value / rowsPerPage.value) - 1
+    currentPage.value = Math.max(0, Math.min(page, maxPage))
   }
 
   return { rowsPerPage, currentPage, paginatedData, totalItems, setPage }

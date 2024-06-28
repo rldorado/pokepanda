@@ -1,7 +1,5 @@
 # PokePanda
 
-[Demo Video](public/Demo.webm)
-
 ![Draft Wireframe](public/mockup.png)
 
 ## Description
@@ -161,10 +159,3 @@ A web application to view and search for Pokémon using Vue 3 and PokeAPI.
 - **Vue 3 with TypeScript**: Leveraged for its static typing capabilities, which enhance code quality and maintainability.
 - **PrimeVue and PrimeFlex**: Utilized for rapid and efficient UI construction, ensuring a responsive design.
 - **PokeAPI**: Chosen for its robustness and ease of use, providing a comprehensive data set for Pokémon.
-
-## Pending Items
-
-- **Caching API Calls**: Improve performance by caching API responses.
-- **Wireframes**: Create and include wireframes for the solution.
-- **Demo Video**: Record and include a demonstration video of the working solution.
-- **Unit Tests**: Write additional unit and integration tests to ensure application reliability.

@@ -7,19 +7,44 @@ import Badge from 'primevue/badge'
 import Pokemon from '@/models/Pokemon'
 import { SortOrder, pokemonImage } from '@/helpers'
 import { RouterLink } from 'vue-router'
+import { PropType } from 'vue'
+import { SORT_OPTIONS } from '@/constants'
 
-const props = defineProps<{
-  pokemons: Pokemon[]
-  totalItems: number
-  limit: number
-  offset: number
+defineProps({
+  pokemons: {
+    type: Array as PropType<Pokemon[]>,
+    required: true,
+    default: () => []
+  },
+  totalItems: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  rowsPerPage: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  currentPage: {
+    type: Number,
+    required: true,
+    default: 0
+  },
   sort: {
-    key: string
-    field: string
-    order: SortOrder
-    options: { label: string; value: string }[]
+    type: Object as PropType<{
+      key: string
+      field: string
+      order: SortOrder
+    }>,
+    required: true,
+    default: () => ({
+      key: '',
+      field: '',
+      order: 0
+    })
   }
-}>()
+})
 
 const emit = defineEmits(['page-change', 'sort-change'])
 
@@ -28,7 +53,7 @@ const onSortChange = (event: { value: string }) => {
 }
 
 const onPageChange = (event: { page: number }) => {
-  emit('page-change', event.page * props.limit)
+  emit('page-change', event.page)
 }
 </script>
 
@@ -37,23 +62,22 @@ const onPageChange = (event: { page: number }) => {
     data-key="id"
     paginator
     :value="pokemons"
-    :first="offset"
-    :rows="limit"
+    :first="currentPage"
+    :rows="rowsPerPage"
     :total-records="totalItems"
     layout="grid"
-    :sort-order="sort?.order"
-    :sort-field="sort?.field"
+    :sort-order="sort.order"
+    :sort-field="sort.field"
     @page="onPageChange"
   >
     <template #header>
       <div class="flex justify-content-between align-items-center">
         <h2 class="m-0">Pokedex</h2>
         <Select
-          v-if="sort"
-          :value="sort.key"
-          :options="sort.options"
+          aria-label="Sort By"
+          :options="SORT_OPTIONS"
           option-label="label"
-          placeholder="Sort By"
+          :placeholder="sort.key || 'Sort By'"
           class="md:w-2"
           @change="onSortChange"
         />

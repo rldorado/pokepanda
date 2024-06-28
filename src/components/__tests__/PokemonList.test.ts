@@ -20,8 +20,7 @@ describe('PokemonList', () => {
         sort: {
           key: 'id',
           field: 'id',
-          order: 1,
-          options: [{ label: 'Pokedex', value: 'id' }]
+          order: 1
         }
       }
     })

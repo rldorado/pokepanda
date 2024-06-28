@@ -1,27 +1,27 @@
 import { defineStore } from 'pinia'
 import Pokemon from '@/models/Pokemon'
 import { fetchAllPokemons, fetchPokemonById } from '@/services'
-import { Ref, ref } from 'vue'
+
 interface PokemonState {
-  pokemons: Ref<Pokemon[]>
-  pokemonDetail: Ref<Pokemon | null>
+  pokemons: Pokemon[]
+  pokemonDetail: Pokemon | null
   loading: boolean
   error: string | null
 }
 
-export const usePokemonStore = defineStore('pokemonStore', {
+const usePokemonStore = defineStore('pokemonStore', {
   state: () =>
     ({
-      pokemons: ref<Pokemon[]>([]),
-      pokemonDetail: ref(null),
+      pokemons: [] as Pokemon[],
+      pokemonDetail: null,
       loading: false,
       error: null
     }) as PokemonState,
   actions: {
-    async loadAllPokemons(filter: string) {
+    async loadAllPokemons(filter: string = '') {
       this.loading = true
       try {
-        this.pokemons = await fetchAllPokemons(filter)
+        this.pokemons = (await fetchAllPokemons(filter)) ?? []
         this.error = null
       } catch (error) {
         this.error = 'Failed to load Pokemons'

@@ -3,7 +3,7 @@ import ProgressSpinner from 'primevue/progressspinner'
 import Card from 'primevue/card'
 import Tag from 'primevue/tag'
 import Button from 'primevue/button'
-import { usePokemonStore } from '@/stores/pokemonStore'
+import usePokemonStore from '@/stores/pokemonStore'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { pokemonImage } from '@/helpers'
@@ -20,12 +20,12 @@ const pokemon = computed(() => store.pokemonDetail)
 </script>
 
 <template>
-  <section>
+  <section class="flex justify-content-center items-center w-full">
     <div v-if="store.loading" class="flex justify-center items-center">
       <ProgressSpinner aria-label="loading" />
     </div>
     <div v-else-if="pokemon" class="p-0 md:p-4">
-      <Card style="width: 25rem; overflow: hidden">
+      <Card class="w-full md:w-8 overflow-hidden">
         <template #header>
           <img :src="pokemonImage(pokemon.id)" :alt="pokemon.name" class="w-full" />
         </template>

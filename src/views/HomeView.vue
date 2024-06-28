@@ -3,48 +3,40 @@ import PokemonList from '@/components/PokemonList.vue'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
-import { usePokemonStore } from '@/stores/pokemonStore'
-import { onMounted, ref, watch } from 'vue'
+import usePokemonStore from '@/stores/pokemonStore'
+import { onMounted, ref, computed } from 'vue'
 import { DATA_LIMIT as LIMIT, DATA_OFFSET as OFFSET } from '@/constants'
 import ProgressSpinner from 'primevue/progressspinner'
-import useFilters from '@/composables/useFilters'
+import useSearch from '@/composables/useSearch'
 import usePagination from '@/composables/usePagination'
 import useSort from '@/composables/useSort'
 import Pokemon from '@/models/Pokemon'
 
 const store = usePokemonStore()
 
+// Sorting
+const { sortKey, sortOrder, sortField, setSort, sortFunction } = useSort<Pokemon>()
+
 // Search filter
-const { filter, setFilter, filteredData } = useFilters(store.pokemons, (pokemon, filter) => {
-  return pokemon.name.toLowerCase().includes(filter.toLowerCase())
-})
+const { filter, filteredData } = useSearch<Pokemon>(
+  computed(() => store.pokemons),
+  (pokemon: Pokemon, filter) => pokemon.name.toLowerCase().includes(filter.toLowerCase())
+)
+
+const sortedAndFilteredData = computed<Pokemon[]>(() =>
+  [...filteredData.value].sort(sortFunction.value)
+)
 
 // Pagination
-const { rowsPerPage, currentPage, setPage, totalItems } = usePagination<Pokemon>({
-  data: filteredData,
+const { rowsPerPage, currentPage, setPage, totalItems, paginatedData } = usePagination<Pokemon>({
+  data: sortedAndFilteredData,
   rowsPerPage: ref(LIMIT),
   currentPage: ref(OFFSET)
 })
 
-// Sorting
-const { sortKey, sortOrder, sortField, sortOptions, setSort } = useSort()
-
 onMounted(() => {
-  store.loadAllPokemons('')
-  setPage(OFFSET)
+  store.loadAllPokemons()
 })
-
-watch(
-  () => filter.value,
-  (newFilter) => {
-    store.loadAllPokemons(newFilter)
-  }
-)
-
-const onFilterChange = () => {
-  setFilter(filter.value)
-  setPage(OFFSET)
-}
 </script>
 
 <template>
@@ -62,17 +54,16 @@ const onFilterChange = () => {
             type="text"
             class="w-full"
             placeholder="Search for a Pokemon"
-            @input="onFilterChange"
           />
         </IconField>
       </div>
       <div>
         <PokemonList
-          :pokemons="store.pokemons"
+          :pokemons="paginatedData"
           :total-items="totalItems"
-          :limit="rowsPerPage"
-          :offset="currentPage"
-          :sort="{ key: sortKey, field: sortField, order: sortOrder, options: sortOptions }"
+          :rows-per-page="rowsPerPage"
+          :current-page="currentPage"
+          :sort="{ key: sortKey, field: sortField, order: sortOrder }"
           @sort-change="setSort"
           @page-change="setPage"
         />
