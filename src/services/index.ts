@@ -15,7 +15,8 @@ const client = new ApolloClient({
  * @param {any} pokemon - The server data containing the Pokemon information.
  * @return {Pokemon} The created Pokemon object.
  */
-const createPokemonFromServer = (pokemon): Pokemon => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createPokemonFromServer = (pokemon: any): Pokemon => {
   return {
     id: pokemon.id,
     name: pokemon.name,
